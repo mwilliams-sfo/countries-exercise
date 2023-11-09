@@ -1,23 +1,34 @@
 package com.example.countries.ui
 
-import android.widget.TextView
+import android.net.Uri
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.countries.api.CountriesApi
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.R
+import com.example.countries.api.CountriesApi
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
-    private val api = CountriesApi()
+    private val api = CountriesApi(
+        Uri.parse("https://gist.githubusercontent.com/peymano-wmt/32dcb892b06648910ddd40406e37fdab/raw/db25946fd77c5873b0303b858e861ce724e0dcd0/")
+    )
+    private lateinit var adapter: CountriesAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adapter = CountriesAdapter()
+        findViewById<RecyclerView>(R.id.country_list).let { countryList ->
+            countryList.layoutManager = LinearLayoutManager(this)
+            countryList.adapter = adapter
+        }
+    }
 
     override fun onResume() {
         super.onResume()
         lifecycleScope.launch {
-            val countries = api.getCountries()
-            val country = countries.getOrNull(0) ?: return@launch
-            findViewById<TextView>(R.id.country_name).text = String.format("%s, %s", country.name, country.region)
-            findViewById<TextView>(R.id.country_capital).text = country.capital
-            findViewById<TextView>(R.id.country_code).text = country.code
+            adapter.countries = api.getCountries()
         }
     }
 }
