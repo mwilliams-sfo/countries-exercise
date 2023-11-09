@@ -22,10 +22,12 @@ class CountriesApi(
         val connection = url.openConnection() as HttpURLConnection
         try {
             connection.addRequestProperty("Accept", "application/json")
-            when (connection.responseCode) {
-                -1 -> throw IOException("Invalid response")
-                HttpURLConnection.HTTP_OK -> Unit
-                else -> throw IOException(connection.responseMessage)
+            val responseCode = connection.responseCode
+            when {
+                responseCode == -1 -> throw IOException("Invalid response")
+                responseCode != HttpURLConnection.HTTP_OK -> {
+                    throw IOException("HTTP status: ${connection.responseMessage}")
+                }
             }
             val body = InputStreamReader(connection.inputStream, Charsets.UTF_8)
                 .use { reader -> reader.readText() }
@@ -40,8 +42,7 @@ class CountriesApi(
                 )
             }
         } finally {
-            connection.errorStream?.close()
-            connection.inputStream?.close()
+            connection.disconnect()
         }
     }
 }
