@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.example.countries.api.CountriesApi
-import com.example.countries.api.Country
+import com.example.countries.api.countries.CountriesApi
+import com.example.countries.api.countries.Country
 import kotlinx.coroutines.launch
 
 class MainViewModel(

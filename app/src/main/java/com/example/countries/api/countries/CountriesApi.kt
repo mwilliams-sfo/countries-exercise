@@ -1,9 +1,10 @@
-package com.example.countries.api
+package com.example.countries.api.countries
 
 import android.net.Uri
+import android.util.JsonReader
+import android.util.JsonToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -29,17 +30,15 @@ class CountriesApi(
                     throw IOException("HTTP status: ${connection.responseMessage}")
                 }
             }
-            val body = InputStreamReader(connection.inputStream, Charsets.UTF_8)
-                .use { reader -> reader.readText() }
-            val bodyJson = JSONArray(body)
-            (0 until bodyJson.length()).map { i ->
-                val countryJson = bodyJson.getJSONObject(i)
-                Country(
-                    name = countryJson.getString("name"),
-                    region = countryJson.getString("region"),
-                    capital = countryJson.getString("capital"),
-                    code = countryJson.getString("code")
-                )
+            JsonReader(InputStreamReader(connection.inputStream, Charsets.UTF_8)).use { reader ->
+                reader.beginArray()
+                val countries = generateSequence {
+                    if (reader.peek() != JsonToken.END_ARRAY) {
+                        Country.fromJson(reader)
+                    } else null
+                }.toList()
+                reader.endArray()
+                countries
             }
         } finally {
             connection.disconnect()

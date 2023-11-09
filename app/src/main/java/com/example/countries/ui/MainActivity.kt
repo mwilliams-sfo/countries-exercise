@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.R
-import com.example.countries.api.CountriesApi
+import com.example.countries.api.countries.CountriesApi
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val countriesApi by lazy {

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.R
-import com.example.countries.api.Country
+import com.example.countries.api.countries.Country
 import com.google.android.material.textview.MaterialTextView
 
 class CountriesAdapter : RecyclerView.Adapter<CountriesAdapter.ViewHolder>() {
