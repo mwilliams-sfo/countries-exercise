@@ -34,8 +34,8 @@ class CountriesAdapter : RecyclerView.Adapter<CountriesAdapter.ViewHolder>() {
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val countryName = itemView.findViewById<MaterialTextView>(R.id.country_name)
-        val countryCapital = itemView.findViewById<MaterialTextView>(R.id.country_capital)
-        val countryCode = itemView.findViewById<MaterialTextView>(R.id.country_code)
+        val countryName: MaterialTextView = itemView.findViewById(R.id.country_name)
+        val countryCapital: MaterialTextView = itemView.findViewById(R.id.country_capital)
+        val countryCode: MaterialTextView = itemView.findViewById(R.id.country_code)
     }
 }
