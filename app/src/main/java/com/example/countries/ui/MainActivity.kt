@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.R
@@ -24,9 +25,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = CountriesAdapter()
-        findViewById<RecyclerView>(R.id.country_list).let { countryList ->
-            countryList.layoutManager = LinearLayoutManager(this)
-            countryList.adapter = adapter
+        findViewById<RecyclerView>(R.id.country_list).run {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayoutManager.VERTICAL))
+            adapter = this@MainActivity.adapter
         }
         viewModel.countries.observe(this) {
             adapter.countries = it
