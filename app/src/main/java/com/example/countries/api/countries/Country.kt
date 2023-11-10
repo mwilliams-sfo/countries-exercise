@@ -1,9 +1,8 @@
 package com.example.countries.api.countries
 
 import android.util.JsonReader
-import android.util.JsonToken
+import com.example.countries.api.JsonSerializer
 import java.io.IOException
-import kotlin.jvm.Throws
 
 data class Country(
     val name: String,
@@ -14,21 +13,15 @@ data class Country(
     companion object {
         @Throws(IOException::class)
         fun fromJson(reader: JsonReader): Country {
-            val map = mutableMapOf<String, Any?>()
-            reader.beginObject()
-            while (reader.peek() != JsonToken.END_OBJECT) {
-                val name = reader.nextName()
-                when {
-                    map.containsKey(name) -> {
-                        throw IOException("Repeated JSON property name: $name")
+            val map = JsonSerializer().parseObject(reader) {
+                when (val name = reader.nextName()) {
+                    "name", "region", "capital", "code" -> name to reader.nextString()
+                    else -> {
+                        reader.skipValue()
+                        null
                     }
-                    name == "name" || name == "region" || name == "capital" || name == "code" -> {
-                        map[name] = reader.nextString()
-                    }
-                    else -> reader.skipValue()
                 }
             }
-            reader.endObject()
             return Country(
                 name = validateProperty(map, "name"),
                 region = validateProperty(map, "region"),

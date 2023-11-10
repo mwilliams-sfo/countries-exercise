@@ -1,5 +1,6 @@
 package com.example.countries.ui
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +23,7 @@ class MainViewModel(
         try {
             _countries.value = countriesApi.getCountries()
         } catch (ex: Exception) {
+            Log.e("MainViewModel", "Failed to update country list", ex)
             _countries.value = emptyList()
             _error.value = "Update failed"
         }
