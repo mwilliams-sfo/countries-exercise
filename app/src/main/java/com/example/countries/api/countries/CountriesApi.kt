@@ -3,6 +3,7 @@ package com.example.countries.api.countries
 import android.net.Uri
 import android.util.JsonReader
 import android.util.JsonToken
+import com.example.countries.api.JsonSerializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -22,7 +23,7 @@ class CountriesApi(
         )
         val connection = url.openConnection() as HttpURLConnection
         try {
-            connection.addRequestProperty("Accept", "application/json")
+            connection.addRequestProperty("Accept", "application/json; charset=utf-8")
             val responseCode = connection.responseCode
             when {
                 responseCode == -1 -> throw IOException("Invalid response")
@@ -31,14 +32,11 @@ class CountriesApi(
                 }
             }
             JsonReader(InputStreamReader(connection.inputStream, Charsets.UTF_8)).use { reader ->
-                reader.beginArray()
-                val countries = generateSequence {
-                    if (reader.peek() != JsonToken.END_ARRAY) {
-                        Country.fromJson(reader)
-                    } else null
-                }.toList()
-                reader.endArray()
-                countries
+                JsonSerializer().parseArray(reader) { Country.fromJson(it) }.also {
+                    if (reader.peek() != JsonToken.END_DOCUMENT) {
+                        throw IOException("Trailing data in response")
+                    }
+                }
             }
         } finally {
             connection.disconnect()
