@@ -8,6 +8,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.countries.api.countries.CountriesApi
 import com.example.countries.api.countries.Country
+import java.io.IOException
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -22,7 +23,7 @@ class MainViewModel(
     fun updateCountries() = viewModelScope.launch {
         try {
             _countries.value = countriesApi.getCountries()
-        } catch (ex: Exception) {
+        } catch (ex: IOException) {
             Log.e("MainViewModel", "Failed to update country list", ex)
             _countries.value = emptyList()
             _error.value = "Update failed"
